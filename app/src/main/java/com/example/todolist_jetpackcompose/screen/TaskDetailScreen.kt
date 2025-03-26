@@ -86,7 +86,7 @@ fun TaskDetailScreen(taskId: Int, navController: NavController) {
                     tasks[tasks.indexOf(task)] = updatedTask
                     navController.popBackStack()
                 },
-                modifier = Modifier.align(Alignment.End)
+                modifier = Modifier.fillMaxWidth(),
             ) {
                 Text("Lưu")
             }
