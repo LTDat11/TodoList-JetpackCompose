@@ -28,7 +28,7 @@ import com.example.todolist_jetpackcompose.domain.model.Task
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TaskDetailScreen(taskId: Int, navController: NavController) {
+fun TaskDetailScreen(taskId: Long, navController: NavController) {
 
     val tasks = remember {
         mutableStateListOf(

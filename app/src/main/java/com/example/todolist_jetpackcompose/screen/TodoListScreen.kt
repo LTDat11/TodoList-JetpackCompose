@@ -32,6 +32,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.todolist_jetpackcompose.components.CardCustom
 import com.example.todolist_jetpackcompose.data.repository.TaskRepositoryImpl
@@ -44,17 +45,11 @@ import com.example.todolist_jetpackcompose.presentaion.ToDoListViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TodoListScreen(navController: NavController) {
-
-    val repository = TaskRepositoryImpl()
-    val viewModel = remember {
-        ToDoListViewModel(
-            GetTaskUseCase(repository),
-            AddTaskUseCase(repository),
-            DeleteTaskUseCase(repository),
-            UpdateTaskUseCase(repository)
-        )
-    }
+fun TodoListScreen(
+    navController: NavController,
+    viewModel: ToDoListViewModel = hiltViewModel()
+) {
+    
     val tasks by viewModel.tasks.collectAsState()
     var titleText by remember { mutableStateOf("") }
     var contentText by remember { mutableStateOf("") }
@@ -78,8 +73,8 @@ fun TodoListScreen(navController: NavController) {
                 items(tasks) { task ->
                     CardCustom(
                         task = task,
-                        onDelete = { viewModel.deleteTask(task) },
-                        onClick = { navController.navigate("task_detail/${task.id}") }
+                        onDelete = { /*viewModel.deleteTask(task)*/ },
+                        onClick = { /*navController.navigate("task_detail/${task.id}")*/ }
 
                     )
                 }

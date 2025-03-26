@@ -15,10 +15,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.todolist_jetpackcompose.screen.TaskDetailScreen
 import com.example.todolist_jetpackcompose.screen.TodoListScreen
 import com.example.todolist_jetpackcompose.ui.theme.TodoListJetpackComposeTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,13 +35,13 @@ class MainActivity : ComponentActivity() {
                         composable("todo_list") {
                             TodoListScreen(navController = navController)
                         }
-                        composable("task_detail/{taskId}") { backStackEntry ->
-                            val taskId = backStackEntry.arguments?.getString("taskId")?.toInt() ?: 0
-                            TaskDetailScreen(
-                                taskId = taskId,
-                                navController = navController
-                            )
-                        }
+//                        composable("task_detail/{taskId}") { backStackEntry ->
+//                            val taskId = backStackEntry.arguments?.getString("taskId")?.toInt() ?: 0
+//                            TaskDetailScreen(
+//                                taskId = taskId.toLong(),
+//                                navController = navController
+//                            )
+//                        }
                     }
                 }
             }
@@ -57,7 +58,7 @@ fun Preview() {
             Surface(
                 modifier = Modifier.padding(innerPadding)
             ) {
-               
+
             }
         }
     }

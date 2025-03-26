@@ -68,7 +68,7 @@ dependencies {
 
     //naviagtion compose
     implementation("androidx.navigation:navigation-compose:2.8.9")
-    
+
     // Hilt
     implementation("com.google.dagger:hilt-android:2.51.1")
     kapt("com.google.dagger:hilt-android-compiler:2.51.1")
@@ -80,6 +80,7 @@ dependencies {
     // Object Box
     kapt("io.objectbox:objectbox-processor:3.8.0")
     implementation("io.objectbox:objectbox-android:3.8.0")
+    implementation("io.objectbox:objectbox-kotlin:3.8.0")
 }
 
 kapt {

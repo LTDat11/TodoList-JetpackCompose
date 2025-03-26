@@ -1,27 +1,39 @@
 package com.example.todolist_jetpackcompose.data.repository
 
+import android.util.Log
+import com.example.todolist_jetpackcompose.ObjectBox
 import com.example.todolist_jetpackcompose.domain.model.Task
 import com.example.todolist_jetpackcompose.domain.repository.TaskRepository
+import io.objectbox.Box
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
+import javax.inject.Inject
 
-class TaskRepositoryImpl : TaskRepository {
-    private val tasks = mutableListOf(
-        Task(1, "Task 1", "This is task 1"),
-        Task(2, "Task 2", "This is task 2"),
-        Task(3, "Task 3", "This is task 3"),
-    )
+class TaskRepositoryImpl @Inject constructor() : TaskRepository {
+    private val taskBox: Box<Task> by lazy { ObjectBox.store.boxFor(Task::class.java) }
 
-    override fun getTask(): List<Task> = tasks.toList()
-
-    override fun addTask(task: Task) {
-        tasks.add(task.copy(id = (tasks.maxOfOrNull { it.id } ?: 0) + 1))
+    override fun getTasks(): Flow<List<Task>> = callbackFlow {
+        val query = taskBox.query().build()
+        val subscription = query.subscribe().observer { tasks ->
+            trySend(tasks)
+        }
+        awaitClose { subscription.cancel() }
     }
 
-    override fun updateTask(task: Task) {
-        val index = tasks.indexOfFirst { it.id == task.id }
-        if (index != -1) tasks[index] = task
+    override suspend fun addTask(task: Task) {
+        Log.d("TaskRepositoryImpl", "Adding task: ${task}")
+        taskBox.put(task)
     }
 
-    override fun deleteTask(task: Task) {
-        tasks.remove(task)
-    }
+
+//    override fun updateTask(task: Task) {
+//        val index = tasks.indexOfFirst { it.id == task.id }
+//        if (index != -1) tasks[index] = task
+//    }
+//
+//    override fun deleteTask(task: Task) {
+//        tasks.remove(task)
+//    }
+
 }
