@@ -146,7 +146,8 @@ fun TodoListScreen(navController: NavController) {
                                     showBottomSheet = false
                                 }
                             },
-                            enabled = titleText.isNotEmpty()
+                            enabled = titleText.isNotEmpty(),
+                            modifier = Modifier.fillMaxWidth()
                         ) {
                             Text("Thêm")
                         }
