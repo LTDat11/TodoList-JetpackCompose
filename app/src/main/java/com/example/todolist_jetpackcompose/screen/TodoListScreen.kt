@@ -21,6 +21,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
@@ -62,11 +63,8 @@ fun TodoListScreen(navController: NavController) {
     var titleText by remember { mutableStateOf("") }
     var contentText by remember { mutableStateOf("") }
     var showBottomSheet by remember { mutableStateOf(false) }
-    val snackbarHostState = remember { SnackbarHostState() }
-    val coroutineScope = rememberCoroutineScope()
 
     Scaffold(
-        snackbarHost = { SnackbarHost(snackbarHostState) }, // Thêm SnackbarHost
         modifier = Modifier.fillMaxSize()
     ) { paddingValues ->
         Box(
@@ -126,6 +124,7 @@ fun TodoListScreen(navController: NavController) {
                             value = titleText,
                             onValueChange = { titleText = it },
                             label = { Text("Tiêu đề") },
+                            placeholder = { Text("Nhập tiêu đề (bắt buộc)") },
                             modifier = Modifier.fillMaxWidth()
                         )
 
@@ -136,7 +135,7 @@ fun TodoListScreen(navController: NavController) {
                             modifier = Modifier.fillMaxWidth(),
                             minLines = 3,
                         )
-                        
+
                         Button(
                             onClick = {
                                 if (titleText.isNotEmpty()) {
@@ -145,15 +144,9 @@ fun TodoListScreen(navController: NavController) {
                                     titleText = ""
                                     contentText = ""
                                     showBottomSheet = false
-                                } else {
-                                    coroutineScope.launch {
-                                        snackbarHostState.showSnackbar(
-                                            message = "Vui lòng nhập title!",
-                                            actionLabel = "Ok",
-                                        )
-                                    }
                                 }
                             },
+                            enabled = titleText.isNotEmpty()
                         ) {
                             Text("Thêm")
                         }
