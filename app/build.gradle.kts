@@ -2,6 +2,9 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    id("io.objectbox")
+    id("kotlin-kapt")
+    id("dagger.hilt.android.plugin")
 }
 
 android {
@@ -65,4 +68,20 @@ dependencies {
 
     //naviagtion compose
     implementation("androidx.navigation:navigation-compose:2.8.9")
+    
+    // Hilt
+    implementation("com.google.dagger:hilt-android:2.51.1")
+    kapt("com.google.dagger:hilt-android-compiler:2.51.1")
+    implementation("androidx.hilt:hilt-work:1.0.0")
+    kapt("androidx.hilt:hilt-compiler:1.0.0")
+    implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
+    implementation("androidx.hilt:hilt-navigation-fragment:1.0.0")
+
+    // Object Box
+    kapt("io.objectbox:objectbox-processor:3.8.0")
+    implementation("io.objectbox:objectbox-android:3.8.0")
+}
+
+kapt {
+    correctErrorTypes = true
 }
