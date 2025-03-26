@@ -6,12 +6,17 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.todolist_jetpackcompose.components.TodoListScreen
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.example.todolist_jetpackcompose.screen.TaskDetailScreen
+import com.example.todolist_jetpackcompose.screen.TodoListScreen
 import com.example.todolist_jetpackcompose.ui.theme.TodoListJetpackComposeTheme
 
 class MainActivity : ComponentActivity() {
@@ -19,8 +24,25 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            TodoListJetpackComposeTheme {
-                TodoListScreen()
+            MaterialTheme {
+                Surface(
+                    modifier = Modifier
+                        .fillMaxSize()
+                ) {
+                    val navController = rememberNavController()
+                    NavHost(navController = navController, startDestination = "todo_list") {
+                        composable("todo_list") {
+                            TodoListScreen(navController = navController)
+                        }
+                        composable("task_detail/{taskId}") { backStackEntry ->
+                            val taskId = backStackEntry.arguments?.getString("taskId")?.toInt() ?: 0
+                            TaskDetailScreen(
+                                taskId = taskId,
+                                navController = navController
+                            )
+                        }
+                    }
+                }
             }
         }
     }
@@ -35,7 +57,7 @@ fun Preview() {
             Surface(
                 modifier = Modifier.padding(innerPadding)
             ) {
-                TodoListScreen()
+               
             }
         }
     }
