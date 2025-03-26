@@ -23,10 +23,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
-import com.example.todolist_jetpackcompose.model.Task
+import com.example.todolist_jetpackcompose.domain.model.Task
 
 @Composable
 fun CardCustom(task: Task, onDelete: () -> Unit, onClick: () -> Unit) {

@@ -1,4 +1,4 @@
-package com.example.todolist_jetpackcompose.model
+package com.example.todolist_jetpackcompose.domain.model
 
 data class Task(
     val id: Int = 0,

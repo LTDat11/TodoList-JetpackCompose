@@ -13,7 +13,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Button
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -21,45 +20,42 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarDuration
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.todolist_jetpackcompose.components.CardCustom
-import com.example.todolist_jetpackcompose.model.Task
-import kotlinx.coroutines.launch
+import com.example.todolist_jetpackcompose.data.repository.TaskRepositoryImpl
+import com.example.todolist_jetpackcompose.domain.model.Task
+import com.example.todolist_jetpackcompose.domain.usecase.AddTaskUseCase
+import com.example.todolist_jetpackcompose.domain.usecase.DeleteTaskUseCase
+import com.example.todolist_jetpackcompose.domain.usecase.GetTaskUseCase
+import com.example.todolist_jetpackcompose.domain.usecase.UpdateTaskUseCase
+import com.example.todolist_jetpackcompose.presentaion.ToDoListViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TodoListScreen(navController: NavController) {
-    // Danh sách task giả lập
-    val tasks = remember {
-        mutableStateListOf(
-            Task(1, "Task 1", "Nội dung task 1"),
-            Task(2, "Task 2", "Nội dung task 2"),
-            Task(3, "Task 3", "Nội dung task 3"),
-            Task(3, "Task 3", "Nội dung task 3"),
-            Task(3, "Task 3", "Nội dung task 3"),
-            Task(3, "Task 3", "Nội dung task 3"),
-            Task(3, "Task 3", "Nội dung task 3"),
-            Task(3, "Task 3", "Nội dung task 3"),
-            Task(3, "Task 3", "Nội dung task 3"),
-            Task(3, "Task 3", "Nội dung task 3"),
+
+    val repository = TaskRepositoryImpl()
+    val viewModel = remember {
+        ToDoListViewModel(
+            GetTaskUseCase(repository),
+            AddTaskUseCase(repository),
+            DeleteTaskUseCase(repository),
+            UpdateTaskUseCase(repository)
         )
     }
-
+    val tasks by viewModel.tasks.collectAsState()
     var titleText by remember { mutableStateOf("") }
     var contentText by remember { mutableStateOf("") }
     var showBottomSheet by remember { mutableStateOf(false) }
@@ -82,7 +78,7 @@ fun TodoListScreen(navController: NavController) {
                 items(tasks) { task ->
                     CardCustom(
                         task = task,
-                        onDelete = { tasks.remove(task) },
+                        onDelete = { viewModel.deleteTask(task) },
                         onClick = { navController.navigate("task_detail/${task.id}") }
 
                     )
@@ -139,8 +135,7 @@ fun TodoListScreen(navController: NavController) {
                         Button(
                             onClick = {
                                 if (titleText.isNotEmpty()) {
-                                    val newId = (tasks.maxOfOrNull { it.id } ?: 0) + 1
-                                    tasks.add(Task(newId, titleText, contentText))
+                                    viewModel.addTask(titleText, contentText)
                                     titleText = ""
                                     contentText = ""
                                     showBottomSheet = false
