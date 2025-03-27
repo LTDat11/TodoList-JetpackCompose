@@ -68,7 +68,9 @@ fun TodoListScreen(
                     CardCustom(
                         task = task,
                         onDelete = { /*viewModel.deleteTask(task)*/ },
-                        onClick = { navController.navigate("task_detail/${task.id}") },
+                        onClick = {
+                            navController.navigate("task_detail/${task.id}")
+                        },
                         viewModel = viewModel
                     )
                 }

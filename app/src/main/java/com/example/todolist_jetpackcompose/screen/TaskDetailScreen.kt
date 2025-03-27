@@ -11,24 +11,19 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.example.todolist_jetpackcompose.domain.model.Task
 import com.example.todolist_jetpackcompose.presentaion.ToDoListViewModel
 
 @SuppressLint("UnrememberedMutableState")
@@ -39,32 +34,24 @@ fun TaskDetailScreen(
     navController: NavController,
     viewModel: ToDoListViewModel = hiltViewModel()
 ) {
-
-    val tasks by viewModel.tasks.collectAsState()
-    val originalTask = tasks.find { it.id == taskId } ?: return // Trở về nếu không tìm thấy task
-
-    var title by remember { mutableStateOf(originalTask.title) }
-    var content by remember { mutableStateOf(originalTask.content) }
-
-    // Kiểm tra xem dữ liệu có thay đổi không
-    val isDataChanged by remember {
-        derivedStateOf {
-            title != originalTask.title || content != originalTask.content
-        }
+    LaunchedEffect(taskId) {
+        viewModel.loadTask(taskId)
     }
+
+    val titleText by viewModel.titleText.collectAsState()
+    val contentText by viewModel.contentText.collectAsState()
+    val isUpdateEnabled by viewModel.isUpdateEnabled.collectAsState()
 
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text("Chi tiết Task") },
                 navigationIcon = {
-                    IconButton(
-                        onClick = { navController.popBackStack() }
-                    ) {
+                    IconButton(onClick = { navController.popBackStack() }) {
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
                             contentDescription = "Quay lại",
-                            tint = Color.LightGray
+                            tint = MaterialTheme.colorScheme.onSurface
                         )
                     }
                 }
@@ -74,34 +61,33 @@ fun TaskDetailScreen(
         Column(
             modifier = Modifier
                 .padding(paddingValue)
-                .padding(16.dp),
+                .padding(16.dp)
+                .fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             OutlinedTextField(
-                value = title,
-                onValueChange = { title = it },
+                value = titleText,
+                onValueChange = { viewModel.onTitleChanged(it) },
                 label = { Text("Tiêu đề") },
                 modifier = Modifier.fillMaxWidth()
             )
             OutlinedTextField(
-                value = content,
-                onValueChange = { content = it },
+                value = contentText,
+                onValueChange = { viewModel.onContentChanged(it) },
                 label = { Text("Nội dung") },
                 modifier = Modifier.fillMaxWidth(),
                 minLines = 3
             )
             Button(
                 onClick = {
-                    val updatedTask = originalTask.copy(title = title, content = content)
-                    viewModel.updateTask(updatedTask)
+                    viewModel.onUpdateTask()
                     navController.popBackStack()
                 },
                 modifier = Modifier.fillMaxWidth(),
-                enabled = isDataChanged && title.isNotEmpty()
+                enabled = isUpdateEnabled
             ) {
                 Text("Lưu")
             }
-
         }
     }
 }

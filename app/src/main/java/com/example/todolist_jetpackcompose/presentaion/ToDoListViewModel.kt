@@ -24,9 +24,23 @@ class ToDoListViewModel @Inject constructor(
     private val _tasks = MutableStateFlow<List<Task>>(emptyList())
     val tasks: StateFlow<List<Task>> = _tasks.asStateFlow()
 
+    // State cho TaskDetailScreen
+    private val _selectedTask = MutableStateFlow<Task?>(null)
+    val selectedTask: StateFlow<Task?> = _selectedTask.asStateFlow()
+
+    private val _titleText = MutableStateFlow("")
+    val titleText: StateFlow<String> = _titleText.asStateFlow()
+
+    private val _contentText = MutableStateFlow("")
+    val contentText: StateFlow<String> = _contentText.asStateFlow()
+
+    private val _isUpdateEnabled = MutableStateFlow(false)
+    val isUpdateEnabled: StateFlow<Boolean> = _isUpdateEnabled.asStateFlow()
+
     init {
         viewModelScope.launch {
             getTaskUseCase().collect { tasks ->
+                println("ViewModel: Tasks collected = $tasks")
                 _tasks.value = tasks
             }
         }
@@ -52,9 +66,57 @@ class ToDoListViewModel @Inject constructor(
 //        }
 //    }
 
+    // Update trạng thái của ták
     fun onTaskStatusChanged(task: Task, isCompleted: Boolean) {
         val updatedTask = task.copy(isCompleted = isCompleted)
         updateTask(updatedTask)
     }
 
+    // Load task khi vào TaskDetailScreen
+    fun loadTask(taskId: Long) {
+        //println("ViewModel: loadTask called with taskId = $taskId")
+        viewModelScope.launch {
+            _tasks.collect { tasks ->
+                //println("ViewModel: Current tasks = $tasks")
+                val task = tasks.find { it.id == taskId }
+                _selectedTask.value = task
+                //println("ViewModel: Found task = $task")
+                task?.let {
+                    _titleText.value = it.title
+                    _contentText.value = it.content
+                    updateButtonState()
+                }
+                return@collect
+            }
+        }
+    }
+
+    // Cập nhật title từ UI
+    fun onTitleChanged(newTitle: String) {
+        _titleText.value = newTitle
+        updateButtonState()
+    }
+
+    // Cập nhật content từ UI
+    fun onContentChanged(newContent: String) {
+        _contentText.value = newContent
+        updateButtonState()
+    }
+
+    // Kiểm tra dữ liệu thay đổi để enable button
+    private fun updateButtonState() {
+        val task = _selectedTask.value ?: return
+        _isUpdateEnabled.value =
+            (_titleText.value != task.title || _contentText.value != task.content) && _titleText.value.isNotEmpty()
+    }
+
+    // Xử lý sự kiện nhấn Update
+    fun onUpdateTask() {
+        val task = _selectedTask.value ?: return
+        val updatedTask = task.copy(
+            title = _titleText.value,
+            content = _contentText.value
+        )
+        updateTask(updatedTask)
+    }
 }
