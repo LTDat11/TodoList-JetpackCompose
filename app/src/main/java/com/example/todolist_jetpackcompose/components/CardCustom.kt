@@ -57,8 +57,7 @@ fun CardCustom(
             Checkbox(
                 checked = task.isCompleted,
                 onCheckedChange = { isChecked ->
-                    val updatedTask = task.copy(isCompleted = isChecked)
-                    viewModel.updateTask(updatedTask)
+                    viewModel.onTaskStatusChanged(task, isChecked)
                 },
                 modifier = Modifier.padding(8.dp)
             )

@@ -52,4 +52,9 @@ class ToDoListViewModel @Inject constructor(
 //        }
 //    }
 
+    fun onTaskStatusChanged(task: Task, isCompleted: Boolean) {
+        val updatedTask = task.copy(isCompleted = isCompleted)
+        updateTask(updatedTask)
+    }
+
 }
