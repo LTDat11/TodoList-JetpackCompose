@@ -2,12 +2,15 @@ package com.example.todolist_jetpackcompose.screen
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -20,6 +23,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -41,6 +45,7 @@ fun TaskDetailScreen(
     val titleText by viewModel.titleText.collectAsState()
     val contentText by viewModel.contentText.collectAsState()
     val isUpdateEnabled by viewModel.isUpdateEnabled.collectAsState()
+    val isLoading by viewModel.isLoading.collectAsState()
 
     Scaffold(
         topBar = {
@@ -58,36 +63,48 @@ fun TaskDetailScreen(
             )
         }
     ) { paddingValue ->
-        Column(
-            modifier = Modifier
-                .padding(paddingValue)
-                .padding(16.dp)
-                .fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            OutlinedTextField(
-                value = titleText,
-                onValueChange = { viewModel.onTitleChanged(it) },
-                label = { Text("Tiêu đề") },
-                modifier = Modifier.fillMaxWidth()
-            )
-            OutlinedTextField(
-                value = contentText,
-                onValueChange = { viewModel.onContentChanged(it) },
-                label = { Text("Nội dung") },
-                modifier = Modifier.fillMaxWidth(),
-                minLines = 3
-            )
-            Button(
-                onClick = {
-                    viewModel.onUpdateTask()
-                    navController.popBackStack()
-                },
-                modifier = Modifier.fillMaxWidth(),
-                enabled = isUpdateEnabled
+        if (isLoading) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValue),
+                contentAlignment = Alignment.Center
             ) {
-                Text("Lưu")
+                CircularProgressIndicator()
+            }
+        } else {
+            Column(
+                modifier = Modifier
+                    .padding(paddingValue)
+                    .padding(16.dp)
+                    .fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                OutlinedTextField(
+                    value = titleText,
+                    onValueChange = { viewModel.onTitleChanged(it) },
+                    label = { Text("Tiêu đề") },
+                    modifier = Modifier.fillMaxWidth()
+                )
+                OutlinedTextField(
+                    value = contentText,
+                    onValueChange = { viewModel.onContentChanged(it) },
+                    label = { Text("Nội dung") },
+                    modifier = Modifier.fillMaxWidth(),
+                    minLines = 3
+                )
+                Button(
+                    onClick = {
+                        viewModel.onUpdateTask()
+                        navController.popBackStack()
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                    enabled = isUpdateEnabled
+                ) {
+                    Text("Lưu")
+                }
             }
         }
+
     }
 }

@@ -26,7 +26,7 @@ class ToDoListViewModel @Inject constructor(
 
     // State cho TaskDetailScreen
     private val _selectedTask = MutableStateFlow<Task?>(null)
-    val selectedTask: StateFlow<Task?> = _selectedTask.asStateFlow()
+    //val selectedTask: StateFlow<Task?> = _selectedTask.asStateFlow()
 
     private val _titleText = MutableStateFlow("")
     val titleText: StateFlow<String> = _titleText.asStateFlow()
@@ -36,6 +36,9 @@ class ToDoListViewModel @Inject constructor(
 
     private val _isUpdateEnabled = MutableStateFlow(false)
     val isUpdateEnabled: StateFlow<Boolean> = _isUpdateEnabled.asStateFlow()
+
+    private val _isLoading = MutableStateFlow(false)
+    val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
 
     init {
         viewModelScope.launch {
@@ -76,6 +79,7 @@ class ToDoListViewModel @Inject constructor(
     fun loadTask(taskId: Long) {
         //println("ViewModel: loadTask called with taskId = $taskId")
         viewModelScope.launch {
+            _isLoading.value = true // Show loading
             _tasks.collect { tasks ->
                 //println("ViewModel: Current tasks = $tasks")
                 val task = tasks.find { it.id == taskId }
@@ -86,6 +90,7 @@ class ToDoListViewModel @Inject constructor(
                     _contentText.value = it.content
                     updateButtonState()
                 }
+                _isLoading.value = false
                 return@collect
             }
         }
