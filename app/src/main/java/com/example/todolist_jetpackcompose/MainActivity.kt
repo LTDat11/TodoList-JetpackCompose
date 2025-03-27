@@ -12,9 +12,12 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.todolist_jetpackcompose.presentaion.ToDoListViewModel
+import com.example.todolist_jetpackcompose.screen.TaskDetailScreen
 import com.example.todolist_jetpackcompose.screen.TodoListScreen
 import com.example.todolist_jetpackcompose.ui.theme.TodoListJetpackComposeTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -35,13 +38,16 @@ class MainActivity : ComponentActivity() {
                         composable("todo_list") {
                             TodoListScreen(navController = navController)
                         }
-//                        composable("task_detail/{taskId}") { backStackEntry ->
-//                            val taskId = backStackEntry.arguments?.getString("taskId")?.toInt() ?: 0
-//                            TaskDetailScreen(
-//                                taskId = taskId.toLong(),
-//                                navController = navController
-//                            )
-//                        }
+                        composable("task_detail/{taskId}") { backStackEntry ->
+                            val taskId =
+                                backStackEntry.arguments?.getString("taskId")?.toLong() ?: 0L
+                            val viewModel = hiltViewModel<ToDoListViewModel>()
+                            TaskDetailScreen(
+                                navController = navController,
+                                viewModel = viewModel,
+                                taskId = taskId
+                            )
+                        }
                     }
                 }
             }

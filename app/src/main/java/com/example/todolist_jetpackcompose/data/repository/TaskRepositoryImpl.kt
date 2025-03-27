@@ -27,11 +27,11 @@ class TaskRepositoryImpl @Inject constructor() : TaskRepository {
     }
 
 
-//    override fun updateTask(task: Task) {
-//        val index = tasks.indexOfFirst { it.id == task.id }
-//        if (index != -1) tasks[index] = task
-//    }
-//
+    override suspend fun updateTask(task: Task) {
+        Log.d("TaskRepositoryImpl", "update task: ${task}")
+        taskBox.put(task)
+    }
+
 //    override fun deleteTask(task: Task) {
 //        tasks.remove(task)
 //    }

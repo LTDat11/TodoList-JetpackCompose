@@ -25,18 +25,26 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.todolist_jetpackcompose.domain.model.Task
+import com.example.todolist_jetpackcompose.presentaion.ToDoListViewModel
 
 @Composable
-fun CardCustom(task: Task, onDelete: () -> Unit, onClick: () -> Unit) {
-    var isChecked by remember { mutableStateOf(false) }
+fun CardCustom(
+    task: Task,
+    onDelete: () -> Unit,
+    onClick: () -> Unit,
+    viewModel: ToDoListViewModel,
+) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .clickable(onClick = onClick),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
         colors = CardDefaults.cardColors(
-            containerColor = if (isChecked) Color.Green.copy(alpha = 0.2f) else Color(0xB4EC6FC9)
+            containerColor = if (task.isCompleted) Color.Green.copy(alpha = 0.2f) else Color(
+                0xB4EC6FC9
+            )
         )
     ) {
         Row(
@@ -47,26 +55,30 @@ fun CardCustom(task: Task, onDelete: () -> Unit, onClick: () -> Unit) {
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Checkbox(
-                checked = isChecked,
-                onCheckedChange = { isChecked = it },
+                checked = task.isCompleted,
+                onCheckedChange = { isChecked ->
+                    val updatedTask = task.copy(isCompleted = isChecked)
+                    viewModel.updateTask(updatedTask)
+                },
                 modifier = Modifier.padding(8.dp)
             )
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = task.title,
-                    style = if (isChecked) MaterialTheme.typography.bodyLarge.copy(
+                    style = if (task.isCompleted) MaterialTheme.typography.bodyLarge.copy(
                         textDecoration = TextDecoration.LineThrough
-                    ) else MaterialTheme.typography.bodyLarge
+                    ) else MaterialTheme.typography.bodyLarge,
                 )
                 Text(
                     text = task.content,
-                    style = if (isChecked) MaterialTheme.typography.bodyMedium.copy(
+                    style = if (task.isCompleted) MaterialTheme.typography.bodyMedium.copy(
                         textDecoration = TextDecoration.LineThrough
-                    ) else MaterialTheme.typography.bodyMedium
+                    ) else MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
                 )
             }
 
-            if (isChecked) {
+            if (task.isCompleted) {
                 IconButton(onClick = onDelete) {
                     Icon(
                         imageVector = Icons.Default.Delete,

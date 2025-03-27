@@ -25,7 +25,7 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
+
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -35,12 +35,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.todolist_jetpackcompose.components.CardCustom
-import com.example.todolist_jetpackcompose.data.repository.TaskRepositoryImpl
-import com.example.todolist_jetpackcompose.domain.model.Task
-import com.example.todolist_jetpackcompose.domain.usecase.AddTaskUseCase
-import com.example.todolist_jetpackcompose.domain.usecase.DeleteTaskUseCase
-import com.example.todolist_jetpackcompose.domain.usecase.GetTaskUseCase
-import com.example.todolist_jetpackcompose.domain.usecase.UpdateTaskUseCase
 import com.example.todolist_jetpackcompose.presentaion.ToDoListViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -49,7 +43,7 @@ fun TodoListScreen(
     navController: NavController,
     viewModel: ToDoListViewModel = hiltViewModel()
 ) {
-    
+
     val tasks by viewModel.tasks.collectAsState()
     var titleText by remember { mutableStateOf("") }
     var contentText by remember { mutableStateOf("") }
@@ -74,8 +68,8 @@ fun TodoListScreen(
                     CardCustom(
                         task = task,
                         onDelete = { /*viewModel.deleteTask(task)*/ },
-                        onClick = { /*navController.navigate("task_detail/${task.id}")*/ }
-
+                        onClick = { navController.navigate("task_detail/${task.id}") },
+                        viewModel = viewModel
                     )
                 }
             }

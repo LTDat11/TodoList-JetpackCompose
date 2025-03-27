@@ -19,7 +19,7 @@ class ToDoListViewModel @Inject constructor(
     private val getTaskUseCase: GetTaskUseCase,
     private val addTaskUseCase: AddTaskUseCase,
 //    private val deleteTaskUseCase: DeleteTaskUseCase,
-//    private val updateTaskUseCase: UpdateTaskUseCase,
+    private val updateTaskUseCase: UpdateTaskUseCase,
 ) : ViewModel() {
     private val _tasks = MutableStateFlow<List<Task>>(emptyList())
     val tasks: StateFlow<List<Task>> = _tasks.asStateFlow()
@@ -39,18 +39,17 @@ class ToDoListViewModel @Inject constructor(
         }
     }
 
-//    fun updateTask(task: Task) {
-//        viewModelScope.launch {
-//            updateTaskUseCase(task)
-//            _tasks.value = getTaskUseCase()
-//        }
-//    }
-//
+    fun updateTask(task: Task) {
+        viewModelScope.launch {
+            updateTaskUseCase(task)
+        }
+    }
+
 //    fun deleteTask(task: Task) {
 //        viewModelScope.launch {
 //            deleteTaskUseCase(task)
 //            _tasks.value = getTaskUseCase()
 //        }
 //    }
-    
+
 }
