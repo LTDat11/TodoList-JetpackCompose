@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -28,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.example.todolist_jetpackcompose.components.DialogCustom
 import com.example.todolist_jetpackcompose.presentaion.ToDoListViewModel
 
 @SuppressLint("UnrememberedMutableState")
@@ -46,6 +48,7 @@ fun TaskDetailScreen(
     val contentText by viewModel.contentText.collectAsState()
     val isUpdateEnabled by viewModel.isUpdateEnabled.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
+    val showConfirmDialog by viewModel.showConfirmDialog.collectAsState()
 
     Scaffold(
         topBar = {
@@ -95,8 +98,7 @@ fun TaskDetailScreen(
                 )
                 Button(
                     onClick = {
-                        viewModel.onUpdateTask()
-                        navController.popBackStack()
+                        viewModel.onUpdateTaskRequested()
                     },
                     modifier = Modifier.fillMaxWidth(),
                     enabled = isUpdateEnabled
@@ -104,7 +106,20 @@ fun TaskDetailScreen(
                     Text("Lưu")
                 }
             }
-        }
 
+            DialogCustom(
+                dialogTitle = "Thông báo!",
+                dialogText = "Bạn có chắc chắn muốn thay đổi thông tin của Task?",
+                icon = Icons.Default.Info,
+                onDismiss = {
+                    viewModel.onDismissDialog()
+                },
+                onConfirm = {
+                    viewModel.onConfirmUpdate()
+                    navController.popBackStack()
+                },
+                showDialog = showConfirmDialog
+            )
+        }
     }
 }

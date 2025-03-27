@@ -37,8 +37,13 @@ class ToDoListViewModel @Inject constructor(
     private val _isUpdateEnabled = MutableStateFlow(false)
     val isUpdateEnabled: StateFlow<Boolean> = _isUpdateEnabled.asStateFlow()
 
+    // Loading
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
+
+    // showDialog
+    private val _showConfirmDialog = MutableStateFlow(false)
+    val showConfirmDialog: StateFlow<Boolean> = _showConfirmDialog.asStateFlow()
 
     init {
         viewModelScope.launch {
@@ -116,12 +121,32 @@ class ToDoListViewModel @Inject constructor(
     }
 
     // Xử lý sự kiện nhấn Update
-    fun onUpdateTask() {
+//    fun onUpdateTask() {
+//        val task = _selectedTask.value ?: return
+//        val updatedTask = task.copy(
+//            title = _titleText.value,
+//            content = _contentText.value
+//        )
+//        updateTask(updatedTask)
+//    }
+    
+    fun onUpdateTaskRequested() {
+        if (_isUpdateEnabled.value) {
+            _showConfirmDialog.value = true // Hiển thị dialog xác nhận
+        }
+    }
+
+    fun onConfirmUpdate() {
         val task = _selectedTask.value ?: return
         val updatedTask = task.copy(
             title = _titleText.value,
             content = _contentText.value
         )
         updateTask(updatedTask)
+        _showConfirmDialog.value = false // Ẩn dialog sau khi xác nhận
+    }
+
+    fun onDismissDialog() {
+        _showConfirmDialog.value = false // Ẩn dialog khi hủy
     }
 }
