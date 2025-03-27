@@ -18,7 +18,7 @@ import javax.inject.Inject
 class ToDoListViewModel @Inject constructor(
     private val getTaskUseCase: GetTaskUseCase,
     private val addTaskUseCase: AddTaskUseCase,
-//    private val deleteTaskUseCase: DeleteTaskUseCase,
+    private val deleteTaskUseCase: DeleteTaskUseCase,
     private val updateTaskUseCase: UpdateTaskUseCase,
 ) : ViewModel() {
     private val _tasks = MutableStateFlow<List<Task>>(emptyList())
@@ -45,6 +45,13 @@ class ToDoListViewModel @Inject constructor(
     private val _showConfirmDialog = MutableStateFlow(false)
     val showConfirmDialog: StateFlow<Boolean> = _showConfirmDialog.asStateFlow()
 
+    private val _taskToDelete = MutableStateFlow<Task?>(null)
+    val taskToDelete: StateFlow<Task?> = _taskToDelete.asStateFlow()
+
+    // dialog xác nhận xóa
+    private val _showDeleteConfirmDialog = MutableStateFlow(false)
+    val showDeleteConfirmDialog: StateFlow<Boolean> = _showDeleteConfirmDialog.asStateFlow()
+
     init {
         viewModelScope.launch {
             getTaskUseCase().collect { tasks ->
@@ -61,18 +68,11 @@ class ToDoListViewModel @Inject constructor(
         }
     }
 
-    fun updateTask(task: Task) {
+    private fun updateTask(task: Task) {
         viewModelScope.launch {
             updateTaskUseCase(task)
         }
     }
-
-//    fun deleteTask(task: Task) {
-//        viewModelScope.launch {
-//            deleteTaskUseCase(task)
-//            _tasks.value = getTaskUseCase()
-//        }
-//    }
 
     // Update trạng thái của ták
     fun onTaskStatusChanged(task: Task, isCompleted: Boolean) {
@@ -82,7 +82,6 @@ class ToDoListViewModel @Inject constructor(
 
     // Load task khi vào TaskDetailScreen
     fun loadTask(taskId: Long) {
-        //println("ViewModel: loadTask called with taskId = $taskId")
         viewModelScope.launch {
             _isLoading.value = true // Show loading
             _tasks.collect { tasks ->
@@ -120,16 +119,6 @@ class ToDoListViewModel @Inject constructor(
             (_titleText.value != task.title || _contentText.value != task.content) && _titleText.value.isNotEmpty()
     }
 
-    // Xử lý sự kiện nhấn Update
-//    fun onUpdateTask() {
-//        val task = _selectedTask.value ?: return
-//        val updatedTask = task.copy(
-//            title = _titleText.value,
-//            content = _contentText.value
-//        )
-//        updateTask(updatedTask)
-//    }
-    
     fun onUpdateTaskRequested() {
         if (_isUpdateEnabled.value) {
             _showConfirmDialog.value = true // Hiển thị dialog xác nhận
@@ -148,5 +137,25 @@ class ToDoListViewModel @Inject constructor(
 
     fun onDismissDialog() {
         _showConfirmDialog.value = false // Ẩn dialog khi hủy
+    }
+
+    // Xóa task
+    fun onDeleteTaskRequested(task: Task) {
+        _taskToDelete.value = task
+        _showDeleteConfirmDialog.value = true
+    }
+
+    fun onConfirmDelete() {
+        val task = _taskToDelete.value ?: return
+        viewModelScope.launch {
+            deleteTaskUseCase(task)
+            _showDeleteConfirmDialog.value = false
+            _taskToDelete.value = null
+        }
+    }
+
+    fun onDismissDeleteDialog() {
+        _showDeleteConfirmDialog.value = false
+        _taskToDelete.value = null
     }
 }

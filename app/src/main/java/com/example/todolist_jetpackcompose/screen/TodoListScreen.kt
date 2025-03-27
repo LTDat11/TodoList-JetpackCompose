@@ -12,6 +12,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
@@ -35,6 +36,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.todolist_jetpackcompose.components.CardCustom
+import com.example.todolist_jetpackcompose.components.DialogCustom
 import com.example.todolist_jetpackcompose.presentaion.ToDoListViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -48,6 +50,7 @@ fun TodoListScreen(
     var titleText by remember { mutableStateOf("") }
     var contentText by remember { mutableStateOf("") }
     var showBottomSheet by remember { mutableStateOf(false) }
+    val showDeleteConfirmDialog by viewModel.showDeleteConfirmDialog.collectAsState()
 
     Scaffold(
         modifier = Modifier.fillMaxSize()
@@ -67,7 +70,6 @@ fun TodoListScreen(
                 items(tasks) { task ->
                     CardCustom(
                         task = task,
-                        onDelete = { /*viewModel.deleteTask(task)*/ },
                         onClick = {
                             navController.navigate("task_detail/${task.id}")
                         },
@@ -140,7 +142,15 @@ fun TodoListScreen(
                     }
                 }
             }
+
+            DialogCustom(
+                dialogTitle = "Xác nhận xóa",
+                dialogText = "Bạn có chắc chắn muốn xóa task này không?",
+                icon = Icons.Default.Delete,
+                onDismiss = { viewModel.onDismissDeleteDialog() },
+                onConfirm = { viewModel.onConfirmDelete() },
+                showDialog = showDeleteConfirmDialog
+            )
         }
     }
-
 }

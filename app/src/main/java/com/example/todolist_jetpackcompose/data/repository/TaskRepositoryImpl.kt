@@ -32,8 +32,9 @@ class TaskRepositoryImpl @Inject constructor() : TaskRepository {
         taskBox.put(task)
     }
 
-//    override fun deleteTask(task: Task) {
-//        tasks.remove(task)
-//    }
+    override suspend fun deleteTask(task: Task) {
+        Log.d("TaskRepositoryImpl", "delete task: ${task}")
+        taskBox.remove(task)
+    }
 
 }

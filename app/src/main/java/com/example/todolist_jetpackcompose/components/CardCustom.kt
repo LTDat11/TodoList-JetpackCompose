@@ -28,7 +28,6 @@ import com.example.todolist_jetpackcompose.presentaion.ToDoListViewModel
 @Composable
 fun CardCustom(
     task: Task,
-    onDelete: () -> Unit,
     onClick: () -> Unit,
     viewModel: ToDoListViewModel = hiltViewModel(),
 ) {
@@ -74,7 +73,9 @@ fun CardCustom(
             }
 
             if (task.isCompleted) {
-                IconButton(onClick = onDelete) {
+                IconButton(onClick = {
+                    viewModel.onDeleteTaskRequested(task)
+                }) {
                     Icon(
                         imageVector = Icons.Default.Delete,
                         contentDescription = "Xóa",
