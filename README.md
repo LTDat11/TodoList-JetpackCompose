@@ -17,32 +17,33 @@ To-Do List App là một ứng dụng quản lý công việc được xây dự
 - 📐 **Clean Architecture**: Tách biệt rõ ràng giữa các tầng Presentation, Domain, Data
 
 ## 📂 Cấu trúc dự án
-📂 com.example.todolist_jetpackcompose
-    ├── 📂 components           # Các thành phần UI tái sử dụng
-    │   │   ├── 📄 CardCustom.kt    # Component hiển thị task
-    │   │   └── 📄 DialogCustom.kt  # Dialog xác nhận xóa
-    ├── 📂 data                # Data Layer: Xử lý dữ liệu
-    │   │   └── 📂 model            # Các entity cho database
-    │   │           └── 📄 TaskEntity.kt # Entity cho ObjectBox
-    │   └── 📂 repository       # Repository triển khai
-    │   │       └── 📄 TaskRepositoryImpl.kt # Triển khai TaskRepository
-    ├── 📂 di                   # Dependency Injection với Hilt
-    │   │   └── 📄 AppModule.kt     # Cung cấp dependency (TaskRepository)
-    ├── 📂 domain              # Domain Layer: Logic nghiệp vụ
-    │   │   ├── 📂 model            # Các entity nghiệp vụ
-    │   │   │       └── 📄 Task.kt      # Entity Task thuần túy
-    │   │   ├── 📂 repository       # Interface repository
-    │   │   │       └── 📄 TaskRepository.kt # Định nghĩa phương thức truy xuất dữ liệu
-    │   │   └── 📂 usecase          # Use cases cho logic nghiệp vụ
-    │   │           ├── 📄 AddTaskUseCase.kt    # Thêm task
-    │   │           ├── 📄 DeleteTaskUseCase.kt # Xóa task
-    │   │           ├── 📄 GetTaskUseCase.kt    # Lấy danh sách task
-    │   │           └── 📄 UpdateTaskUseCase.kt # Cập nhật task
-    └── 📂 presentaion          # Presentation Layer: ViewModel
-            └── 📄 ToDoListViewModel.kt # Quản lý state và logic UI
-            └── 📂 screen               # Các màn hình UI
-                    ├── 📄 TaskDetailScreen.kt # Màn hình chi tiết task 
-                    └── 📄 TodoListScreen.kt   # Màn hình danh sách task
+```bash
+com.example.todolist_jetpackcompose
+├── components           # Các thành phần UI tái sử dụng
+│   ├── CardCustom.kt    # Component hiển thị task
+│   └── DialogCustom.kt  # Dialog xác nhận xóa
+├── data                # Data Layer: Xử lý dữ liệu
+│   ├── model            # Các entity cho database
+│   │   └── TaskEntity.kt # Entity cho ObjectBox
+│   └── repository       # Repository triển khai
+│       └── TaskRepositoryImpl.kt # Triển khai TaskRepository
+├── di                   # Dependency Injection với Hilt
+│   └── AppModule.kt     # Cung cấp dependency (TaskRepository)
+├── domain              # Domain Layer: Logic nghiệp vụ
+│   ├── model            # Các entity nghiệp vụ
+│   │   └── Task.kt      # Entity Task thuần túy
+│   ├── repository       # Interface repository
+│   │   └── TaskRepository.kt # Định nghĩa phương thức truy xuất dữ liệu
+│   └── usecase          # Use cases cho logic nghiệp vụ
+│       ├── AddTaskUseCase.kt    # Thêm task
+│       ├── DeleteTaskUseCase.kt # Xóa task
+│       ├── GetTaskUseCase.kt    # Lấy danh sách task
+│       └── UpdateTaskUseCase.kt # Cập nhật task
+└── presentation         # Presentation Layer: ViewModel và UI
+    ├── ToDoListViewModel.kt # Quản lý state và logic UI
+    └── screen               # Các màn hình UI
+        ├── TaskDetailScreen.kt # Màn hình chi tiết task 
+        └── TodoListScreen.kt   # Màn hình danh sách task
 
 ## 📥 Cài đặt
 ### 📌 Cấu hình đang sử dụng
