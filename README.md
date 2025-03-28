@@ -44,7 +44,7 @@ com.example.todolist_jetpackcompose
     └── screen               # Các màn hình UI
         ├── TaskDetailScreen.kt # Màn hình chi tiết task 
         └── TodoListScreen.kt   # Màn hình danh sách task
-
+```
 ## 📥 Cài đặt
 ### 📌 Cấu hình đang sử dụng
 - 🏗 Android Studio Meerkat
