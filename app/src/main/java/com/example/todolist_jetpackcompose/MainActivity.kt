@@ -18,8 +18,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.todolist_jetpackcompose.presentaion.ToDoListViewModel
-import com.example.todolist_jetpackcompose.screen.TaskDetailScreen
-import com.example.todolist_jetpackcompose.screen.TodoListScreen
+import com.example.todolist_jetpackcompose.presentaion.screen.TaskDetailScreen
+import com.example.todolist_jetpackcompose.presentaion.screen.TodoListScreen
 import com.example.todolist_jetpackcompose.ui.theme.TodoListJetpackComposeTheme
 import dagger.hilt.android.AndroidEntryPoint
 

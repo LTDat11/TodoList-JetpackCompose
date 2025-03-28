@@ -1,5 +1,6 @@
 package com.example.todolist_jetpackcompose.presentaion
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.todolist_jetpackcompose.domain.model.Task
@@ -23,6 +24,7 @@ constructor(
     private val addTaskUseCase: AddTaskUseCase,
     private val deleteTaskUseCase: DeleteTaskUseCase,
     private val updateTaskUseCase: UpdateTaskUseCase,
+    private val savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
     private val _tasks = MutableStateFlow<List<Task>>(emptyList())
     val tasks: StateFlow<List<Task>> = _tasks.asStateFlow()
@@ -58,6 +60,13 @@ constructor(
     // dialog xác nhận xóa
     private val _showDeleteConfirmDialog = MutableStateFlow(false)
     val showDeleteConfirmDialog: StateFlow<Boolean> = _showDeleteConfirmDialog.asStateFlow()
+
+    // State cho vị trí FAB
+    private val _fabOffsetX = MutableStateFlow(savedStateHandle.get<Float>("fab_x") ?: 0f)
+    val fabOffsetX: StateFlow<Float> = _fabOffsetX.asStateFlow()
+
+    private val _fabOffsetY = MutableStateFlow(savedStateHandle.get<Float>("fab_y") ?: 0f)
+    val fabOffsetY: StateFlow<Float> = _fabOffsetY.asStateFlow()
 
     init {
         viewModelScope.launch {
@@ -160,5 +169,13 @@ constructor(
     fun onDismissDeleteDialog() {
         _showDeleteConfirmDialog.value = false
         _taskToDelete.value = null
+    }
+
+    // Hàm cập nhật vị trí FAB
+    fun updateFabPosition(x: Float, y: Float) {
+        _fabOffsetX.value = x
+        _fabOffsetY.value = y
+        savedStateHandle["fab_x"] = x
+        savedStateHandle["fab_y"] = y
     }
 }

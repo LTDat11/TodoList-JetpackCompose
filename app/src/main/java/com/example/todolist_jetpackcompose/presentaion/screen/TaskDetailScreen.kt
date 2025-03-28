@@ -1,4 +1,4 @@
-package com.example.todolist_jetpackcompose.screen
+package com.example.todolist_jetpackcompose.presentaion.screen
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
