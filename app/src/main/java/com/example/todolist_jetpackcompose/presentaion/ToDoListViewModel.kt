@@ -16,7 +16,9 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class ToDoListViewModel @Inject constructor(
+class ToDoListViewModel
+@Inject
+constructor(
     private val getTaskUseCase: GetTaskUseCase,
     private val addTaskUseCase: AddTaskUseCase,
     private val deleteTaskUseCase: DeleteTaskUseCase,
@@ -27,7 +29,7 @@ class ToDoListViewModel @Inject constructor(
 
     // State cho TaskDetailScreen
     private val _selectedTask = MutableStateFlow<Task?>(null)
-    //val selectedTask: StateFlow<Task?> = _selectedTask.asStateFlow()
+    // val selectedTask: StateFlow<Task?> = _selectedTask.asStateFlow()
 
     private val _titleText = MutableStateFlow("")
     val titleText: StateFlow<String> = _titleText.asStateFlow()
@@ -51,7 +53,7 @@ class ToDoListViewModel @Inject constructor(
     val showConfirmDialog: StateFlow<Boolean> = _showConfirmDialog.asStateFlow()
 
     private val _taskToDelete = MutableStateFlow<Task?>(null)
-    val taskToDelete: StateFlow<Task?> = _taskToDelete.asStateFlow()
+    // val taskToDelete: StateFlow<Task?> = _taskToDelete.asStateFlow()
 
     // dialog xác nhận xóa
     private val _showDeleteConfirmDialog = MutableStateFlow(false)
@@ -69,15 +71,11 @@ class ToDoListViewModel @Inject constructor(
 
     fun addTask(title: String, content: String) {
         val task = Task(title = title, content = content)
-        viewModelScope.launch {
-            addTaskUseCase(task)
-        }
+        viewModelScope.launch { addTaskUseCase(task) }
     }
 
     private fun updateTask(task: Task) {
-        viewModelScope.launch {
-            updateTaskUseCase(task)
-        }
+        viewModelScope.launch { updateTaskUseCase(task) }
     }
 
     // Update trạng thái của ták
@@ -91,10 +89,10 @@ class ToDoListViewModel @Inject constructor(
         viewModelScope.launch {
             _isLoading.value = true // Show loading
             _tasks.collect { tasks ->
-                //println("ViewModel: Current tasks = $tasks")
+                // println("ViewModel: Current tasks = $tasks")
                 val task = tasks.find { it.id == taskId }
                 _selectedTask.value = task
-                //println("ViewModel: Found task = $task")
+                // println("ViewModel: Found task = $task")
                 task?.let {
                     _titleText.value = it.title
                     _contentText.value = it.content
@@ -123,7 +121,8 @@ class ToDoListViewModel @Inject constructor(
     private fun updateButtonState() {
         val task = _selectedTask.value ?: return
         _isUpdateEnabled.value =
-            (_titleText.value != task.title || _contentText.value != task.content) && _titleText.value.isNotEmpty()
+            (_titleText.value != task.title || _contentText.value != task.content) &&
+                _titleText.value.isNotEmpty()
     }
 
     fun onUpdateTaskRequested() {
@@ -134,10 +133,7 @@ class ToDoListViewModel @Inject constructor(
 
     fun onConfirmUpdate() {
         val task = _selectedTask.value ?: return
-        val updatedTask = task.copy(
-            title = _titleText.value,
-            content = _contentText.value
-        )
+        val updatedTask = task.copy(title = _titleText.value, content = _contentText.value)
         updateTask(updatedTask)
         _showConfirmDialog.value = false // Ẩn dialog sau khi xác nhận
     }

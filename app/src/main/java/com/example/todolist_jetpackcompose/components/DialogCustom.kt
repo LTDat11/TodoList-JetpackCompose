@@ -21,36 +21,12 @@ fun DialogCustom(
 ) {
     if (showDialog) {
         AlertDialog(
-            icon = {
-                Icon(icon, contentDescription = "Example Icon", tint = Color.LightGray)
-            },
-            title = {
-                Text(text = dialogTitle)
-            },
-            text = {
-                Text(text = dialogText)
-            },
-            onDismissRequest = {
-                onDismiss()
-            },
-            confirmButton = {
-                TextButton(
-                    onClick = {
-                        onConfirm()
-                    }
-                ) {
-                    Text("Xác nhận")
-                }
-            },
-            dismissButton = {
-                TextButton(
-                    onClick = {
-                        onDismiss()
-                    }
-                ) {
-                    Text("Hủy")
-                }
-            },
+            icon = { Icon(icon, contentDescription = "Example Icon", tint = Color.LightGray) },
+            title = { Text(text = dialogTitle) },
+            text = { Text(text = dialogText) },
+            onDismissRequest = { onDismiss() },
+            confirmButton = { TextButton(onClick = { onConfirm() }) { Text("Xác nhận") } },
+            dismissButton = { TextButton(onClick = { onDismiss() }) { Text("Hủy") } },
             modifier = modifier,
         )
     }

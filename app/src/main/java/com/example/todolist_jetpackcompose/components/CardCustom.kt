@@ -26,65 +26,57 @@ import com.example.todolist_jetpackcompose.domain.model.Task
 import com.example.todolist_jetpackcompose.presentaion.ToDoListViewModel
 
 @Composable
-fun CardCustom(
-    task: Task,
-    onClick: () -> Unit,
-    viewModel: ToDoListViewModel = hiltViewModel(),
-) {
+fun CardCustom(task: Task, onClick: () -> Unit, viewModel: ToDoListViewModel = hiltViewModel()) {
     Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable(onClick = onClick),
+        modifier = Modifier.fillMaxWidth().clickable(onClick = onClick),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = if (task.isCompleted) Color.Green.copy(alpha = 0.2f) else Color(
-                0xB4EC6FC9
-            )
-        )
+        colors =
+            CardDefaults.cardColors(
+                containerColor =
+                    if (task.isCompleted) Color.Green.copy(alpha = 0.2f) else Color(0xB4EC6FC9)
+            ),
     ) {
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp),
+            modifier = Modifier.fillMaxWidth().padding(8.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Checkbox(
                 checked = task.isCompleted,
-                onCheckedChange = { isChecked ->
-                    viewModel.onTaskStatusChanged(task, isChecked)
-                },
-                modifier = Modifier.padding(8.dp)
+                onCheckedChange = { isChecked -> viewModel.onTaskStatusChanged(task, isChecked) },
+                modifier = Modifier.padding(8.dp),
             )
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = task.title,
-                    style = if (task.isCompleted) MaterialTheme.typography.bodyLarge.copy(
-                        textDecoration = TextDecoration.LineThrough
-                    ) else MaterialTheme.typography.bodyLarge,
+                    style =
+                        if (task.isCompleted)
+                            MaterialTheme.typography.bodyLarge.copy(
+                                textDecoration = TextDecoration.LineThrough
+                            )
+                        else MaterialTheme.typography.bodyLarge,
                 )
                 Text(
                     text = task.content,
-                    style = if (task.isCompleted) MaterialTheme.typography.bodyMedium.copy(
-                        textDecoration = TextDecoration.LineThrough
-                    ) else MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                    style =
+                        if (task.isCompleted)
+                            MaterialTheme.typography.bodyMedium.copy(
+                                textDecoration = TextDecoration.LineThrough
+                            )
+                        else MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
                 )
             }
 
             if (task.isCompleted) {
-                IconButton(onClick = {
-                    viewModel.onDeleteTaskRequested(task)
-                }) {
+                IconButton(onClick = { viewModel.onDeleteTaskRequested(task) }) {
                     Icon(
                         imageVector = Icons.Default.Delete,
                         contentDescription = "Xóa",
-                        tint = MaterialTheme.colorScheme.error
+                        tint = MaterialTheme.colorScheme.error,
                     )
                 }
             }
-
         }
-
     }
 }

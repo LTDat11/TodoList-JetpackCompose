@@ -15,26 +15,22 @@ class TaskRepositoryImpl @Inject constructor() : TaskRepository {
 
     override fun getTasks(): Flow<List<Task>> = callbackFlow {
         val query = taskBox.query().build()
-        val subscription = query.subscribe().observer { tasks ->
-            trySend(tasks)
-        }
+        val subscription = query.subscribe().observer { tasks -> trySend(tasks) }
         awaitClose { subscription.cancel() }
     }
 
     override suspend fun addTask(task: Task) {
-        Log.d("TaskRepositoryImpl", "Adding task: ${task}")
+        Log.d("TaskRepositoryImpl", "Adding task: $task")
         taskBox.put(task)
     }
 
-
     override suspend fun updateTask(task: Task) {
-        Log.d("TaskRepositoryImpl", "update task: ${task}")
+        Log.d("TaskRepositoryImpl", "update task: $task")
         taskBox.put(task)
     }
 
     override suspend fun deleteTask(task: Task) {
-        Log.d("TaskRepositoryImpl", "delete task: ${task}")
+        Log.d("TaskRepositoryImpl", "delete task: $task")
         taskBox.remove(task)
     }
-
 }

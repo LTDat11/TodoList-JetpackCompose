@@ -8,7 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
@@ -42,11 +42,9 @@ import com.example.todolist_jetpackcompose.presentaion.ToDoListViewModel
 fun TaskDetailScreen(
     taskId: Long,
     navController: NavController,
-    viewModel: ToDoListViewModel = hiltViewModel()
+    viewModel: ToDoListViewModel = hiltViewModel(),
 ) {
-    LaunchedEffect(taskId) {
-        viewModel.loadTask(taskId)
-    }
+    LaunchedEffect(taskId) { viewModel.loadTask(taskId) }
 
     val titleText by viewModel.titleText.collectAsState()
     val contentText by viewModel.contentText.collectAsState()
@@ -60,44 +58,37 @@ fun TaskDetailScreen(
                 title = {
                     Text(
                         text = "Chi tiết Task",
-                        style = TextStyle(
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 18.sp,
-                        )
+                        style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 18.sp),
                     )
                 },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(
-                            imageVector = Icons.Default.ArrowBack,
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Quay lại",
                             tint = MaterialTheme.colorScheme.primary,
                         )
                     }
                 },
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    titleContentColor = MaterialTheme.colorScheme.primary,
-                ),
+                colors =
+                    TopAppBarDefaults.centerAlignedTopAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.primaryContainer,
+                        titleContentColor = MaterialTheme.colorScheme.primary,
+                    ),
             )
         }
     ) { paddingValue ->
         if (isLoading) {
             Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValue),
-                contentAlignment = Alignment.Center
+                modifier = Modifier.fillMaxSize().padding(paddingValue),
+                contentAlignment = Alignment.Center,
             ) {
                 CircularProgressIndicator()
             }
         } else {
             Column(
-                modifier = Modifier
-                    .padding(paddingValue)
-                    .padding(16.dp)
-                    .fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
+                modifier = Modifier.padding(paddingValue).padding(16.dp).fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
                 OutlinedTextField(
                     value = titleText,
@@ -114,11 +105,9 @@ fun TaskDetailScreen(
                     minLines = 3,
                 )
                 Button(
-                    onClick = {
-                        viewModel.onUpdateTaskRequested()
-                    },
+                    onClick = { viewModel.onUpdateTaskRequested() },
                     modifier = Modifier.fillMaxWidth(),
-                    enabled = isUpdateEnabled
+                    enabled = isUpdateEnabled,
                 ) {
                     Text("Lưu")
                 }
@@ -128,14 +117,12 @@ fun TaskDetailScreen(
                 dialogTitle = "Thông báo!",
                 dialogText = "Bạn có chắc chắn muốn thay đổi thông tin của Task?",
                 icon = Icons.Default.Info,
-                onDismiss = {
-                    viewModel.onDismissDialog()
-                },
+                onDismiss = { viewModel.onDismissDialog() },
                 onConfirm = {
                     viewModel.onConfirmUpdate()
                     navController.popBackStack()
                 },
-                showDialog = showConfirmDialog
+                showDialog = showConfirmDialog,
             )
         }
     }
