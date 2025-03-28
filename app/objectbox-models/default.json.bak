@@ -4,28 +4,28 @@
   "_note3": "If you have VCS merge conflicts, you must resolve them according to ObjectBox docs.",
   "entities": [
     {
-      "id": "2:1448743199090012635",
-      "lastPropertyId": "4:8502351491180089670",
-      "name": "TaskEntity",
+      "id": "1:3936634706500882094",
+      "lastPropertyId": "4:8513087351418215177",
+      "name": "Task",
       "properties": [
         {
-          "id": "1:8606470174183914864",
+          "id": "1:435362169396609213",
           "name": "id",
           "type": 6,
           "flags": 1
         },
         {
-          "id": "2:514118976553633937",
+          "id": "2:708733914242768330",
           "name": "title",
           "type": 9
         },
         {
-          "id": "3:5560422239139008229",
+          "id": "3:1214532753873647285",
           "name": "content",
           "type": 9
         },
         {
-          "id": "4:8502351491180089670",
+          "id": "4:8513087351418215177",
           "name": "isCompleted",
           "type": 1
         }
@@ -33,22 +33,15 @@
       "relations": []
     }
   ],
-  "lastEntityId": "2:1448743199090012635",
+  "lastEntityId": "1:3936634706500882094",
   "lastIndexId": "0:0",
   "lastRelationId": "0:0",
   "lastSequenceId": "0:0",
   "modelVersion": 5,
   "modelVersionParserMinimum": 5,
-  "retiredEntityUids": [
-    3936634706500882094
-  ],
+  "retiredEntityUids": [],
   "retiredIndexUids": [],
-  "retiredPropertyUids": [
-    435362169396609213,
-    708733914242768330,
-    1214532753873647285,
-    8513087351418215177
-  ],
+  "retiredPropertyUids": [],
   "retiredRelationUids": [],
   "version": 1
 }

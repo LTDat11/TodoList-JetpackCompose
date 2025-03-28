@@ -1,7 +1,7 @@
 package com.example.todolist_jetpackcompose
 
 import android.content.Context
-import com.example.todolist_jetpackcompose.domain.model.MyObjectBox
+import com.example.todolist_jetpackcompose.data.model.MyObjectBox
 import io.objectbox.BoxStore
 
 object ObjectBox {
