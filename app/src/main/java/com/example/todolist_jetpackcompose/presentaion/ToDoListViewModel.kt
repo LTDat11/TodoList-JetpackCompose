@@ -8,6 +8,7 @@ import com.example.todolist_jetpackcompose.domain.usecase.DeleteTaskUseCase
 import com.example.todolist_jetpackcompose.domain.usecase.GetTaskUseCase
 import com.example.todolist_jetpackcompose.domain.usecase.UpdateTaskUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -37,9 +38,13 @@ class ToDoListViewModel @Inject constructor(
     private val _isUpdateEnabled = MutableStateFlow(false)
     val isUpdateEnabled: StateFlow<Boolean> = _isUpdateEnabled.asStateFlow()
 
-    // Loading
+    // Loading detail
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
+
+    // Loading listView
+    private val _isTaskLoading = MutableStateFlow(true)
+    val isTaskLoading: StateFlow<Boolean> = _isTaskLoading.asStateFlow()
 
     // showDialog
     private val _showConfirmDialog = MutableStateFlow(false)
@@ -55,8 +60,9 @@ class ToDoListViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             getTaskUseCase().collect { tasks ->
-                println("ViewModel: Tasks collected = $tasks")
                 _tasks.value = tasks
+                delay(500)
+                _isTaskLoading.value = false
             }
         }
     }
@@ -94,6 +100,7 @@ class ToDoListViewModel @Inject constructor(
                     _contentText.value = it.content
                     updateButtonState()
                 }
+                delay(500)
                 _isLoading.value = false
                 return@collect
             }

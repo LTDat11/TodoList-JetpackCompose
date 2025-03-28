@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">TodoList-JetpackCompose</string>
+    <string name="title_top_bar">Todo List</string>
+    <string name="title_detail_top_bar">Chi tiết task</string>
+    <string name="lable_title">Chi tiết task</string>
 </resources>
