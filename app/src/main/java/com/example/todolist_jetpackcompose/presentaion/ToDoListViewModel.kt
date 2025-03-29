@@ -178,4 +178,54 @@ constructor(
         savedStateHandle["fab_x"] = x
         savedStateHandle["fab_y"] = y
     }
+
+    // Kéo FAB
+    fun onFabDragged(
+        dragAmountX: Float,
+        dragAmountY: Float,
+        screenWidth: Float,
+        screenHeight: Float,
+        density: Float,
+    ) {
+        val fabSize = 56f
+        val newOffsetX =
+            (_fabOffsetX.value + dragAmountX / density).coerceIn(0f, screenWidth - fabSize)
+        val newOffsetY =
+            (_fabOffsetY.value + dragAmountY / density).coerceIn(0f, screenHeight - fabSize)
+        _fabOffsetX.value = newOffsetX
+        _fabOffsetY.value = newOffsetY
+    }
+
+    // Thả Fab kéo về trái hoặc phải
+    fun onFabDragEnded(screenWidth: Float) {
+        val fabSize = 56f
+        val halfScreen = screenWidth / 2
+        val targetX = if (_fabOffsetX.value < halfScreen) 0f else (screenWidth - fabSize)
+        _fabOffsetX.value = targetX
+        savedStateHandle["fab_x"] = targetX
+        savedStateHandle["fab_y"] = _fabOffsetY.value
+    }
+
+    // Điều chỉnh vị trí FAB khi xoay màn hình hoặc khởi tạo
+    fun adjustFabPosition(screenWidth: Float, screenHeight: Float) {
+        val fabSize = 56f
+        val adjustedX = _fabOffsetX.value.coerceIn(0f, screenWidth - fabSize)
+        val adjustedY = _fabOffsetY.value.coerceIn(0f, screenHeight - fabSize)
+
+        if (_fabOffsetX.value == 0f && _fabOffsetY.value == 0f) {
+            // Đặt vị trí mặc định nếu chưa có
+            val defaultX = screenWidth - fabSize - 16f
+            val defaultY = screenHeight - fabSize - 16f
+            _fabOffsetX.value = defaultX
+            _fabOffsetY.value = defaultY
+            savedStateHandle["fab_x"] = defaultX
+            savedStateHandle["fab_y"] = defaultY
+        } else {
+            // Chỉ điều chỉnh nếu ra ngoài màn hình
+            _fabOffsetX.value = adjustedX
+            _fabOffsetY.value = adjustedY
+            savedStateHandle["fab_x"] = adjustedX
+            savedStateHandle["fab_y"] = adjustedY
+        }
+    }
 }

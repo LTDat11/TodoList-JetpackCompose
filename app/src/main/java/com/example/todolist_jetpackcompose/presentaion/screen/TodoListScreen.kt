@@ -106,6 +106,7 @@ fun TodoListScreen(navController: NavController, viewModel: ToDoListViewModel = 
         },
     ) { paddingValues ->
         BoxWithConstraints(modifier = Modifier.padding(paddingValues).fillMaxSize()) {
+            // lấy giá trị chiều rộng và cao của BoxWithConstraints (.value để đổi sang float)
             val screenWidth = maxWidth.value
             val screenHeight = maxHeight.value
 
@@ -138,15 +139,12 @@ fun TodoListScreen(navController: NavController, viewModel: ToDoListViewModel = 
                         .size(56.dp)
                         .pointerInput(Unit) {
                             detectDragGestures(
+                                // Thả nút fab
                                 onDragEnd = {
                                     // Khi thả tay, FAB dính vào cạnh trái hoặc phải
                                     coroutineScope.launch {
-                                        val fabSize = 56f
-                                        val halfScreen = screenWidth / 2
-                                        val targetX =
-                                            if (fabOffsetX.value < halfScreen) 0f
-                                            else (screenWidth - fabSize)
-                                        fabOffsetX.animateTo(targetX, animationSpec = tween(300))
+                                        viewModel.onFabDragEnded(screenWidth)
+                                        fabOffsetX.animateTo(viewModel.fabOffsetX.value, tween(300))
                                         // Lưu vị trí sau khi thả
                                         viewModel.updateFabPosition(
                                             fabOffsetX.value,
@@ -156,20 +154,16 @@ fun TodoListScreen(navController: NavController, viewModel: ToDoListViewModel = 
                                 }
                             ) { change, dragAmount ->
                                 change.consume()
-                                val newOffsetX =
-                                    (fabOffsetX.value + dragAmount.x / density).coerceIn(
-                                        0f,
-                                        screenWidth - 56f,
-                                    )
-                                val newOffsetY =
-                                    (fabOffsetY.value + dragAmount.y / density).coerceIn(
-                                        0f,
-                                        screenHeight - 56f,
-                                    )
-
+                                viewModel.onFabDragged(
+                                    dragAmount.x,
+                                    dragAmount.y,
+                                    screenWidth,
+                                    screenHeight,
+                                    density,
+                                )
                                 coroutineScope.launch {
-                                    fabOffsetX.snapTo(newOffsetX)
-                                    fabOffsetY.snapTo(newOffsetY)
+                                    fabOffsetX.snapTo(viewModel.fabOffsetX.value)
+                                    fabOffsetY.snapTo(viewModel.fabOffsetY.value)
                                 }
                             }
                         },
@@ -235,16 +229,11 @@ fun TodoListScreen(navController: NavController, viewModel: ToDoListViewModel = 
                 showDialog = showDeleteConfirmDialog,
             )
 
-            // Khôi phục vị trí FAB từ ViewModel khi vào màn hình
-            LaunchedEffect(fabOffsetXState, fabOffsetYState) {
-                fabOffsetX.snapTo(fabOffsetXState)
-                fabOffsetY.snapTo(fabOffsetYState)
-                // Đặt vị trí mặc định nếu chưa có (góc dưới bên phải)
-                if (fabOffsetXState == 0f && fabOffsetYState == 0f) {
-                    fabOffsetX.snapTo(screenWidth - 56f - 16f)
-                    fabOffsetY.snapTo(screenHeight - 56f - 16f)
-                    viewModel.updateFabPosition(fabOffsetX.value, fabOffsetY.value)
-                }
+            // Điều chỉnh vị trí FAB khi xoay màn hình
+            LaunchedEffect(screenWidth, screenHeight) {
+                viewModel.adjustFabPosition(screenWidth, screenHeight)
+                fabOffsetX.snapTo(viewModel.fabOffsetX.value)
+                fabOffsetY.snapTo(viewModel.fabOffsetY.value)
             }
         }
 
